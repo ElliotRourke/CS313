@@ -38,4 +38,11 @@ public class CurrentAccount implements AccountADT {
     public double getBalance(){
         return balance;
     }
+
+    public boolean transState(double amount){
+        if((getBalance() + 500.0) < amount){
+            return false;
+        }
+        return true;
+    }
 }

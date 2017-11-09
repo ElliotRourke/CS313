@@ -48,4 +48,12 @@ public class BasicAccount implements AccountADT{
         return accountID;
     }
 
+    public boolean transState(double amount){
+        if(getBalance() < amount){
+            return false;
+        }
+        return true;
+    }
+
+
 }

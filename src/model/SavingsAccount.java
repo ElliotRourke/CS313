@@ -36,4 +36,11 @@ public class SavingsAccount implements AccountADT {
     public double getBalance(){
         return balance;
     }
+
+    public boolean transState(double amount){
+        if(getBalance() < amount){
+            return false;
+        }
+        return true;
+    }
 }

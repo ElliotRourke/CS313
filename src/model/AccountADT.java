@@ -5,4 +5,5 @@ public interface AccountADT {
     boolean deposit(double amount);
     boolean transfer(AccountADT source, AccountADT target,double amount);
     double getBalance();
+    boolean transState(double amount);
 }
