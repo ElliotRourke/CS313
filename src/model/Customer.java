@@ -39,6 +39,7 @@ public class Customer{
             System.out.println("Can't Wait Any Longer!");
             return false;
         }finally{
+            enoughFundsCondition.signalAll();
             accountLock.unlock();
         }
         return true;
@@ -52,6 +53,7 @@ public class Customer{
             System.out.println("Deposit Thread: Amount deposited: "+amount);
             System.out.println("Deposit Thread: Balance at end: "+ account.getBalance());
         }finally{
+            enoughFundsCondition.signalAll();
             accountLock.unlock();
         }
         return true;
@@ -66,6 +68,7 @@ public class Customer{
             }
             deposit(target,amount);
         }finally{
+            enoughFundsCondition.signalAll();
             accountLock.unlock();
         }
         return true;

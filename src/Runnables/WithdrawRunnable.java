@@ -19,7 +19,6 @@ public class WithdrawRunnable implements Runnable {
     public void run(){
         try {
             customer.withdraw(account,amount);
-
             Thread.sleep(DELAY);
         }catch(InterruptedException e){
             e.printStackTrace();
