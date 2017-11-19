@@ -9,15 +9,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Customer{
 
-    private String name;
+    private String accountName;
     private Lock accountLock;
+    private Lock nameLock;
+
     private Condition enoughFundsCondition;
+    private Condition nameCondition;
     private List<AccountADT> myAccounts;
 
-    public Customer(String name){
-        setName(name);
+    public Customer(String accountName){
         accountLock = new ReentrantLock();
+        nameLock = new ReentrantLock();
         enoughFundsCondition = accountLock.newCondition();
+        nameCondition = nameLock.newCondition();
+        setName(accountName);
         myAccounts = new ArrayList<>(3);
     }
 
@@ -52,7 +57,7 @@ public class Customer{
             account.deposit(amount);
             System.out.println("Deposit Thread: Amount deposited: "+amount);
             System.out.println("Deposit Thread: Balance at end: "+ account.getBalance());
-        }finally{
+        } finally{
             enoughFundsCondition.signalAll();
             accountLock.unlock();
         }
@@ -85,16 +90,38 @@ public class Customer{
     }
 
     public double viewBalance(AccountADT account){
-        System.out.println(account.getBalance());
+        accountLock.lock();
+        try {
+            System.out.println( this.getName() + "'s account ID:" + account.getAccountId() + " balance : " + account.getBalance());
+        } finally{
+            enoughFundsCondition.signalAll();
+            accountLock.unlock();
+        }
         return account.getBalance();
     }
 
-    public void setName(String name){
-        this.name = name;
+    public void setName(String accountName){
+        nameLock.lock();
+        String tempName = getName();
+        try {
+            this.accountName = accountName;
+            if(tempName != null) {
+                System.out.println("Name changed from : " + tempName + " to " + accountName);
+            }
+        }finally {
+            nameCondition.signalAll();
+            nameLock.unlock();
+        }
     }
 
-    public String getName(){
-        return name;
+    public String getName() {
+        nameLock.lock();
+        try {
+            return accountName;
+        } finally {
+            nameCondition.signalAll();
+            nameLock.unlock();
+        }
     }
 
 }

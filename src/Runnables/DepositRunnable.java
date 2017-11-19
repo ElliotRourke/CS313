@@ -5,7 +5,7 @@ import model.Customer;
 
 public class DepositRunnable implements Runnable {
 
-    private static final int DELAY = 1;
+    private static final int DELAY = 2;
     private AccountADT account;
     private Customer customer;
     private double amount;
