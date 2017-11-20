@@ -27,8 +27,8 @@ public class CurrentAccount implements AccountADT {
         boolean stillWaiting = true;
         accountLock.lock();
         try {
-            System.out.println("Withdraw Thread: Balance is " + getBalance() + " at the start of the thread");
-            System.out.println("Withdraw Thread: Attempting to withdraw "+ amount);
+            System.out.println("Withdraw Thread:: Balance is " + getBalance() + " at the start of the thread");
+            System.out.println("Withdraw Thread:: Attempting to withdraw "+ amount);
             while(!transState(amount)){
                 if(!stillWaiting){
                     Thread.currentThread().interrupt();
@@ -36,7 +36,7 @@ public class CurrentAccount implements AccountADT {
                 stillWaiting = enoughFundsCondition.await(1, TimeUnit.SECONDS);
             }
             setBalance(getBalance()-amount);
-            System.out.println("Withdraw Thread: Balance is " + getBalance() + " at the end of the thread");
+            System.out.println("Withdraw Thread:: Balance is " + getBalance() + " at the end of the thread");
         }catch(InterruptedException e){
             System.out.println("Can't Wait Any Longer!");
             return false;
@@ -50,10 +50,10 @@ public class CurrentAccount implements AccountADT {
     public boolean deposit(double amount){
         accountLock.lock();
         try {
-            System.out.println("Deposit Thread: Balance at start: "+ getBalance());
+            System.out.println("Deposit Thread - Balance at start: "+ getBalance());
             setBalance(getBalance()+amount);
-            System.out.println("Deposit Thread: Amount deposited: "+amount);
-            System.out.println("Deposit Thread: Balance at end: "+ getBalance());
+            System.out.println("Deposit Thread - Amount deposited: "+amount);
+            System.out.println("Deposit Thread - Balance at end: "+ getBalance());
         } finally{
             enoughFundsCondition.signalAll();
             accountLock.unlock();
@@ -67,7 +67,7 @@ public class CurrentAccount implements AccountADT {
         accountLock.lock();
         try {
             if(!withdraw(amount)){
-                System.out.println("Insufficient funds!");
+                System.out.println("Insufficient funds!! ");
                 return false;
             }
             target.deposit(amount);
@@ -106,7 +106,13 @@ public class CurrentAccount implements AccountADT {
     }
 
     public double getBalance(){
-        return balance;
+        accountLock.lock();
+        try{
+            return balance;
+        }finally {
+            enoughFundsCondition.signalAll();
+            accountLock.unlock();
+        }
     }
 
     public int getType() {

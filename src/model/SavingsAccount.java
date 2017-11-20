@@ -116,8 +116,14 @@ public class SavingsAccount implements AccountADT {
         this.balance = balance;
     }
 
-    public double getBalance(){
-        return balance;
+    public synchronized double getBalance(){
+        accountLock.lock();
+        try{
+            return balance;
+        }finally {
+            enoughFundsCondition.signalAll();
+            accountLock.unlock();
+        }
     }
 
     public int getType() {

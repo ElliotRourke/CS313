@@ -30,14 +30,12 @@ public class Employee {
     }
 
     public void standingOrderIn(AccountADT accountADT, double amount){
-        System.out.println("EMPLOYEE ACCESS: \n");
         DepositRunnable dr = new DepositRunnable(accountADT, amount);
         Thread t1 = new Thread(dr);
         t1.start();
     }
 
     public void standingOrderOut(AccountADT accountADT, double amount){
-        System.out.println("EMPLOYEE ACCESS: \n");
         WithdrawRunnable wr = new WithdrawRunnable(accountADT, amount);
         Thread t1 = new Thread(wr);
         t1.start();

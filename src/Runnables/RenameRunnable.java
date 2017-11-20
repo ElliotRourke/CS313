@@ -18,6 +18,7 @@ public class RenameRunnable implements Runnable {
     public void run(){
         try {
             customer.setCustID(newID);
+            System.out.println("New Customer ID: " + customer.getCustID());
             Thread.sleep(DELAY);
         }catch(InterruptedException e){
             e.printStackTrace();
